@@ -4,14 +4,16 @@ import Log from "../models/Log";
 const _repository = mongoose.model("Log", Log);
 
 class LogService {
-  async getByAuthor(author) {
-    return await _repository.find({ "author": author })
-  }
   async getAll() {
-    return await _repository.find({});
+    return await _repository.find({})
+      .populate("shipId", "name");
   }
   async getById(id) {
     return await _repository.findById(id);
+  }
+  async getByAuthor(author) {
+    return await _repository.find({ "author": author })
+      .populate("shipId", "name");
   }
   async create(rawData) {
     return await _repository.create(rawData);

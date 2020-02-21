@@ -7,10 +7,11 @@ export default class CommentController {
     this.router = express
       .Router()
       .get("", this.getAll)
+      .get("/:author", this.getByAuthor)
       .get("/:id", this.getById)
       .post("", this.create)
-      .put("/:id", this.edit)
-      .delete("/:id", this.delete)
+      .put("/:id/edit/:author", this.edit)
+      .delete("/:id/delete/:author", this.delete)
 
   }
 
@@ -30,6 +31,14 @@ export default class CommentController {
       next(error);
     }
   }
+  async getByAuthor(req, res, next) {
+    try {
+      let data = await commentService.getByAuthor(req.params.author)
+      return res.send(data);
+    } catch (error) {
+      next(error);
+    }
+  }
   async create(req, res, next) {
     try {
       let data = await commentService.create(req.body);
@@ -40,7 +49,7 @@ export default class CommentController {
   }
   async edit(req, res, next) {
     try {
-      let data = await commentService.edit(req.params.id, req.boy);
+      let data = await commentService.edit(req.params, req.body);
       return res.send(data);
     } catch (error) {
       next(error);
@@ -48,7 +57,7 @@ export default class CommentController {
   }
   async delete(req, res, next) {
     try {
-      let data = await commentService.delete(req.params.id);
+      let data = await commentService.delete(req.params);
       return res.send(data);
     } catch (error) {
       next(error);
